@@ -57,6 +57,27 @@ def init_bank_suggestion(user: User):
             'type': 's',
             'organization': Organization.objects.get(name='Ministry of Aliyah and Integration')
         },
+        {
+            'name': 'Harnona tax discount available',
+            'description': 'todo...',
+            'end_date': arrow.get(user.aliah_date).shift(years=2).format(DATE_FORMAT),
+            'type': 'r',
+            'organization': Organization.objects.get(name='Local city hall')
+        },
+        {
+            'name': 'Real estate purchasing tax discount available',
+            'description': 'todo...',
+            'end_date': arrow.get(user.aliah_date).shift(years=7).format(DATE_FORMAT),
+            'type': 'r',
+            'organization': Organization.objects.get(name='Ministry of Construction and Housing')
+        },
+        {
+            'name': '5 month of studying in ulpan',
+            'description': 'todo...',
+            'end_date': arrow.get(user.aliah_date).shift(months=18).format(DATE_FORMAT),
+            'type': 'r',
+            'organization': Organization.objects.get(name='Ministry of Aliyah and Integration')
+        },
     ]
 
     for entity in entities:

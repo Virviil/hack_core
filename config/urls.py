@@ -5,5 +5,5 @@ from actions_core import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('actions/', include(urls.urlpatterns))
+    path('api/', include(urls.urlpatterns))
 ]

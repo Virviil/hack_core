@@ -41,7 +41,7 @@ class Organization(models.Model):
 
 
 class TimelineEntity(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='timeline_entities')
     name = models.CharField(max_length=250)
     description = models.CharField(max_length=500)
     entity_type = models.CharField(choices=TIMELINE_ENTITY_TYPES, max_length=10)
@@ -57,7 +57,7 @@ class TimelineEntity(models.Model):
 
 
 class Event(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
     name = models.CharField(max_length=250)
     description = models.CharField(max_length=500)
     date = models.DateField()
