@@ -1,7 +1,3 @@
-from django.shortcuts import render
-from django.http import HttpRequest
-from django.http.response import HttpResponseNotAllowed
-
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
@@ -9,6 +5,7 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
 from .models import User
+from .actions import init_integration_basket, init_bank_suggestion
 
 
 @api_view(['POST'])
@@ -23,6 +20,11 @@ def init_wizard(request: Request):
         number_of_children=raw_user_data['number_of_children']
     )
     user.save()
+
+    # init integration basket
+    init_integration_basket(user)
+    init_bank_suggestion(user)
+
     return Response('user created!', status=status.HTTP_201_CREATED)
 
 

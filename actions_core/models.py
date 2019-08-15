@@ -34,6 +34,11 @@ class Organization(models.Model):
     phone = models.CharField(max_length=15)
     address = models.CharField(max_length=250)
 
+    objects = models.Manager
+
+    def __str__(self):
+        return self.name
+
 
 class TimelineEntity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -41,9 +46,14 @@ class TimelineEntity(models.Model):
     description = models.CharField(max_length=500)
     entity_type = models.CharField(choices=TIMELINE_ENTITY_TYPES, max_length=10)
     start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateField(null=True)  # todo think about suggestions
     is_complited = models.BooleanField(default=False)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
+
+    objects = models.Manager
+
+    def __str__(self):
+        return self.name
 
 
 class Event(models.Model):
@@ -51,6 +61,8 @@ class Event(models.Model):
     name = models.CharField(max_length=250)
     description = models.CharField(max_length=500)
     date = models.DateField()
+
+    objects = models.Manager
 
 
 
