@@ -8,8 +8,8 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
 from .models import User, TimelineEntity, Event
-from .actions import init_integration_basket, init_bank_suggestion
 from .serializers import TimelineEntitySerializer, EventSerializer
+from .actions import init_entities, init_bank_suggestion, init_driving_license
 
 
 @api_view(['POST'])
@@ -26,10 +26,29 @@ def init_wizard(request: Request):
     user.save()
 
     # init integration basket
-    init_integration_basket(user)
+    init_entities(user)
     init_bank_suggestion(user)
 
-    return Response('user created!', status=status.HTTP_201_CREATED)
+    response = {'user_id': user.id}
+    return Response(response, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@parser_classes([JSONParser])
+def driving_license_wizard(request: Request):
+    raw_data = request.data
+    user_id = raw_data.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+
+    if isinstance(user, Http404):
+        return Response('User not found!', status=status.HTTP_404_NOT_FOUND)
+
+    more_then_5_yars_exp = raw_data.get('more_then_5_years')
+
+    init_driving_license(user, more_then_5_yars_exp)
+
+    response = {'ok': True}
+    return Response(response, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])

@@ -1,12 +1,12 @@
 import arrow
 
-from .models import Event, Organization, TimelineEntity, User, TIMELINE_ENTITY_TYPES
+from .models import Event, Organization, TimelineEntity, User
 
 
 DATE_FORMAT = 'YYYY-MM-DD'
 
 
-def init_integration_basket(user: User):
+def init_entities(user: User):
     aliah_date = arrow.get(user.aliah_date, DATE_FORMAT)
 
     first_basket = Event.objects.create(
@@ -23,10 +23,9 @@ def init_integration_basket(user: User):
 
     # add 6 events
     for i in range(1, 7):
-        print(payment_date.format(DATE_FORMAT))
         basket_payment = Event.objects.create(
             user=user,
-            name=f'Integration basken №{i}',
+            name=f'Integration basket №{i}',
             description=f'Payment of integration basket, {i}/6',
             date=payment_date.format(DATE_FORMAT)
         )
@@ -81,15 +80,50 @@ def init_bank_suggestion(user: User):
     ]
 
     for entity in entities:
-        event = TimelineEntity.objects.create(
+        entity = TimelineEntity.objects.create(
             user=user,
             name=entity['name'],
             description=entity['description'],
             entity_type=entity['type'],
             start_date=user.aliah_date,
             end_date=entity['end_date'],
-            is_complited=False,
             organization=entity['organization']
         )
-        event.save()
+        entity.save()
 
+
+def init_driving_license(user: User, more_then_5_yars_exp: bool):
+    organization = Organization.objects.get(name='Ministry of Transport and Road Safety')
+
+    # right to use old dr license for 1 year
+    entity = TimelineEntity.objects.create(
+        user=user,
+        name='Available to use foreign driveng license',
+        description='......',  # todo
+        entity_type='r',
+        start_date=user.aliah_date,
+        end_date=arrow.get(user.aliah_date).shift(years=1).format(DATE_FORMAT),
+        organization=organization
+    )
+    entity.save()
+
+    if not more_then_5_yars_exp:
+        entity = TimelineEntity.objects.create(
+            user=user,
+            name='Pass the driving exam without theoretical part',
+            description='......',  # todo
+            entity_type='r',
+            start_date=user.aliah_date,
+            organization=organization
+        )
+        entity.save()
+    else:
+        entity = TimelineEntity.objects.create(
+            user=user,
+            name='Receive the driving license without exam',
+            description='......',  # todo
+            entity_type='r',
+            start_date=user.aliah_date,
+            organization=organization
+        )
+        entity.save()
