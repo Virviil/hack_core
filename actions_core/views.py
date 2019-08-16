@@ -89,16 +89,6 @@ def get_events(request: Request):
     return JsonResponse(events_serializer.data, safe=False)
 
 
-# @api_view(['GET'])
-# def get_entity_detail(request: Request, entity_id: int):
-#     entity = get_object_or_404(TimelineEntity, id=entity_id)
-#     if isinstance(entity, Http404):
-#         return Response({'msg': 'Entity not found!'}, status=status.HTTP_404_NOT_FOUND)
-#
-#     entity_serializer = FullTimelineEntitySerializer(entity)
-#     return JsonResponse(entity_serializer.data, safe=False)
-
-
 @api_view(['GET'])
 def get_event_detail(request: Request, entity_id: int):
 
