@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404
+from django.views.generic import View, DetailView
 from django.http.response import Http404, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes
@@ -86,19 +89,45 @@ def get_events(request: Request):
     return JsonResponse(events_serializer.data, safe=False)
 
 
-def get_entity_detail(request: Request, entity_id: int):
-    entity = get_object_or_404(TimelineEntity, id=entity_id)
-    if isinstance(entity, Http404):
-        return Response({'msg': 'Entity not found!'}, status=status.HTTP_404_NOT_FOUND)
+# @api_view(['GET'])
+# def get_entity_detail(request: Request, entity_id: int):
+#     entity = get_object_or_404(TimelineEntity, id=entity_id)
+#     if isinstance(entity, Http404):
+#         return Response({'msg': 'Entity not found!'}, status=status.HTTP_404_NOT_FOUND)
+#
+#     entity_serializer = FullTimelineEntitySerializer(entity)
+#     return JsonResponse(entity_serializer.data, safe=False)
 
-    entity_serializer = FullTimelineEntitySerializer(entity)
-    return JsonResponse(entity_serializer.data, safe=False)
 
-
+@api_view(['GET'])
 def get_event_detail(request: Request, entity_id: int):
+
     entity = get_object_or_404(Event, id=entity_id)
     if isinstance(entity, Http404):
         return Response({'msg': 'Event not found!'}, status=status.HTTP_404_NOT_FOUND)
 
     entity_serializer = FullEventSerializer(entity)
     return JsonResponse(entity_serializer.data, safe=False)
+
+
+@method_decorator(csrf_exempt, 'dispatch')
+class EntityDetailView(View):
+    def get(self, request: Request, entity_id: int):
+        entity = get_object_or_404(TimelineEntity, id=entity_id)
+        if isinstance(entity, Http404):
+            return Response({'msg': 'Entity not found!'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        entity_serializer = FullTimelineEntitySerializer(entity)
+        return JsonResponse(entity_serializer.data, safe=False)
+
+    def put(self, request: Request, entity_id: int):
+        entity = get_object_or_404(TimelineEntity, id=entity_id)
+        if isinstance(entity, Http404):
+            return Response({'msg': 'Entity not found!'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        entity.is_complited = True
+        entity.save()
+
+        return JsonResponse({'ok': True})

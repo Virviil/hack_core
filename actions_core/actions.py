@@ -44,6 +44,13 @@ def init_bank_suggestion(user: User):
             'organization': None
         },
         {
+            'name': 'Meet with integration curator',
+            'description': 'todo...',
+            'end_date': None,
+            'type': 's',
+            'organization': Organization.objects.get(name='Ministry of Aliyah and Integration')
+        },
+        {
             'name': 'Register at medical insurance',
             'description': 'todo...',
             'end_date': None,
