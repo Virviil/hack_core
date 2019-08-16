@@ -8,7 +8,8 @@ from rest_framework.request import Request
 from rest_framework.parsers import JSONParser
 
 from .models import User, TimelineEntity, Event
-from .serializers import TimelineEntitySerializer, EventSerializer
+from .serializers import ShortTimelineEntitySerializer, ShortEventSerializer, \
+    FullTimelineEntitySerializer, FullEventSerializer
 from .actions import init_entities, init_bank_suggestion, init_driving_license
 
 
@@ -41,7 +42,7 @@ def driving_license_wizard(request: Request):
     user = get_object_or_404(User, id=user_id)
 
     if isinstance(user, Http404):
-        return Response('User not found!', status=status.HTTP_404_NOT_FOUND)
+        return Response({'msg': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
 
     more_then_5_yars_exp = raw_data.get('more_then_5_years')
 
@@ -56,13 +57,13 @@ def get_entities(request: Request):
     user_id = request.query_params.get('user_id')
     user = get_object_or_404(User, id=user_id)
     if isinstance(user, Http404):
-        return Response('User not found!', status=status.HTTP_404_NOT_FOUND)
+        return Response({'msg': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
 
-    suggestions = user.timeline_entities.filter(entity_type='s')
-    suggestions_serializer = TimelineEntitySerializer(suggestions, many=True)
+    suggestions = user.timeline_entities.filter(entity_type='s').filter(is_complited=False)
+    suggestions_serializer = ShortTimelineEntitySerializer(suggestions, many=True)
 
-    rights = user.timeline_entities.filter(entity_type='r')
-    rights_serializer = TimelineEntitySerializer(rights, many=True)
+    rights = user.timeline_entities.filter(entity_type='r').filter(is_complited=False)
+    rights_serializer = ShortTimelineEntitySerializer(rights, many=True)
 
     response = {
         'rights': rights_serializer.data,
@@ -77,10 +78,27 @@ def get_events(request: Request):
     user_id = request.query_params.get('user_id')
     user = get_object_or_404(User, id=user_id)
     if isinstance(user, Http404):
-        return Response('User not found!', status=status.HTTP_404_NOT_FOUND)
+        return Response({'msg': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
 
     events = user.events.all().order_by('date')
-    events_serializer = EventSerializer(events, many=True)
+    events_serializer = ShortEventSerializer(events, many=True)
 
     return JsonResponse(events_serializer.data, safe=False)
 
+
+def get_entity_detail(request: Request, entity_id: int):
+    entity = get_object_or_404(TimelineEntity, id=entity_id)
+    if isinstance(entity, Http404):
+        return Response({'msg': 'Entity not found!'}, status=status.HTTP_404_NOT_FOUND)
+
+    entity_serializer = FullTimelineEntitySerializer(entity)
+    return JsonResponse(entity_serializer.data, safe=False)
+
+
+def get_event_detail(request: Request, entity_id: int):
+    entity = get_object_or_404(Event, id=entity_id)
+    if isinstance(entity, Http404):
+        return Response({'msg': 'Event not found!'}, status=status.HTTP_404_NOT_FOUND)
+
+    entity_serializer = FullEventSerializer(entity)
+    return JsonResponse(entity_serializer.data, safe=False)

@@ -61,6 +61,7 @@ class Event(models.Model):
     name = models.CharField(max_length=250)
     description = models.CharField(max_length=500)
     date = models.DateField()
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
     objects = models.Manager
 

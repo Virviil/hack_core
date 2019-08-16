@@ -9,13 +9,13 @@ DATE_FORMAT = 'YYYY-MM-DD'
 def init_entities(user: User):
     aliah_date = arrow.get(user.aliah_date, DATE_FORMAT)
 
-    first_basket = Event.objects.create(
-        user=user,
-        name='First basket',
-        description='Fist payment of integration basket, in cash',
-        date=aliah_date.format(DATE_FORMAT)
-    )
-    first_basket.save()
+    # first_basket = Event.objects.create(
+    #     user=user,
+    #     name='First basket',
+    #     description='Fist payment of integration basket, in cash',
+    #     date=aliah_date.format(DATE_FORMAT),
+    # )
+    # first_basket.save()
 
     # shift to 10'th of next month
     payment_date = aliah_date.shift(months=1)
@@ -27,7 +27,8 @@ def init_entities(user: User):
             user=user,
             name=f'Integration basket №{i}',
             description=f'Payment of integration basket, {i}/6',
-            date=payment_date.format(DATE_FORMAT)
+            date=payment_date.format(DATE_FORMAT),
+            organization=Organization.objects.get(name='Ministry of Aliyah and Integration')
         )
         basket_payment.save()
         payment_date = payment_date.shift(months=1)
@@ -127,3 +128,4 @@ def init_driving_license(user: User, more_then_5_yars_exp: bool):
             organization=organization
         )
         entity.save()
+
