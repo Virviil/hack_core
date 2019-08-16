@@ -38,49 +38,49 @@ def init_bank_suggestion(user: User):
     entities = [
         {
             'name': 'Create bank account',
-            'description': 'todo...',
+            'description': 'Reset all the data',
             'end_date': None,
             'type': 's',
             'organization': None
         },
         {
             'name': 'Meet with integration curator',
-            'description': 'todo...',
+            'description': 'Schedule a meeting as soon as possible',
             'end_date': None,
             'type': 's',
             'organization': Organization.objects.get(name='Ministry of Aliyah and Integration')
         },
         {
             'name': 'Register at medical insurance',
-            'description': 'todo...',
+            'description': 'Ensure your health safety',
             'end_date': None,
             'type': 's',
             'organization': None
         },
         {
-            'name': 'Order a biometryc ID',
-            'description': 'todo...',
+            'name': 'Order a biometric ID',
+            'description': 'Get permanent documents',
             'end_date': arrow.get(user.aliah_date).shift(months=3).format(DATE_FORMAT),
             'type': 's',
             'organization': Organization.objects.get(name='Ministry of Aliyah and Integration')
         },
         {
             'name': 'Harnona tax discount available',
-            'description': 'todo...',
+            'description': 'Pay less for land taxes',
             'end_date': arrow.get(user.aliah_date).shift(years=2).format(DATE_FORMAT),
             'type': 'r',
             'organization': Organization.objects.get(name='Local city hall')
         },
         {
             'name': 'Real estate purchasing tax discount available',
-            'description': 'todo...',
+            'description': 'Get the discount for real estate deals',
             'end_date': arrow.get(user.aliah_date).shift(years=7).format(DATE_FORMAT),
             'type': 'r',
             'organization': Organization.objects.get(name='Ministry of Construction and Housing')
         },
         {
             'name': '5 month of studying in ulpan',
-            'description': 'todo...',
+            'description': 'Start your way with language learning',
             'end_date': arrow.get(user.aliah_date).shift(months=18).format(DATE_FORMAT),
             'type': 'r',
             'organization': Organization.objects.get(name='Ministry of Aliyah and Integration')
@@ -107,7 +107,7 @@ def init_driving_license(user: User, more_then_5_yars_exp: bool):
     entity = TimelineEntity.objects.create(
         user=user,
         name='Available to use foreign driveng license',
-        description='......',  # todo
+        description='Try to change as soon as possible',  # todo
         entity_type='r',
         start_date=user.aliah_date,
         end_date=arrow.get(user.aliah_date).shift(years=1).format(DATE_FORMAT),
@@ -119,7 +119,7 @@ def init_driving_license(user: User, more_then_5_yars_exp: bool):
         entity = TimelineEntity.objects.create(
             user=user,
             name='Pass the driving exam without theoretical part',
-            description='......',  # todo
+            description='',  # todo
             entity_type='r',
             start_date=user.aliah_date,
             organization=organization
@@ -129,7 +129,7 @@ def init_driving_license(user: User, more_then_5_yars_exp: bool):
         entity = TimelineEntity.objects.create(
             user=user,
             name='Receive the driving license without exam',
-            description='......',  # todo
+            description='Read more about how to change your license',  # todo
             entity_type='r',
             start_date=user.aliah_date,
             organization=organization
